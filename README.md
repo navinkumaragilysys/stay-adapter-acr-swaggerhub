@@ -1,0 +1,1 @@
+# stay-adapter-acr-swaggerhub
