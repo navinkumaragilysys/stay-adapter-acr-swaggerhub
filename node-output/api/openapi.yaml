@@ -1,0 +1,456 @@
+openapi: 3.0.3
+info:
+  title: ACR HINT Integration (V1).
+  description: "These are the list of APIs which will be used by ACR to get request/response\
+    \ from STAY using Adapter backplane (i.e., ACR HINT Integration) "
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/Agilysys-Inc/MIAGI/1.0.1
+  description: SwaggerHub API Auto Mocking
+security:
+- ClientCredentials: []
+paths:
+  /acr/v1/cancellation-reason-codes:
+    get:
+      summary: Get Cancellation Reason Codes
+      description: "Get Cancellation Reason Codes, A user should be able to get the\
+        \ list of Cancellation Reason Codes to ACR so that the same can be configured\
+        \ and used while cancelling a reservation in ACR."
+      operationId: acrV1Cancellation_reason_codesGET
+      parameters:
+      - name: X-Gateway-Key
+        in: header
+        description: get "primaryKey" subscription of a STAY user from STAY core.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/cancellationReasonCodes'
+        "401":
+          description: Unauthorized - Unable to identify channel / user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+              examples:
+                "401-Unauthorized":
+                  summary: Unauthorized
+                  description: Unable to identify channel / user
+                  value:
+                    errors:
+                    - code: CUST001
+                      message: Valid client Id value is required
+                      source: HINT-company-profile-app
+                      timestamp: 2024-01-05T18:51:33.854+00:00
+                      path: /pms/v1/company/search/profiles
+        "403":
+          description: Forbidden - Caller is not allowed to access the resource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+              examples:
+                "403-Forbidden":
+                  summary: Forbidden
+                  description: Forbidden - caller is not allowed to access the resource
+                  value:
+                    errors:
+                    - code: CUST004
+                      message: Client Id is not authorized to access the resource
+                      source: HINT-company-profile-app
+                      timestamp: 2024-01-05T18:51:33.854+00:00
+                      path: /pms/v1/company/search/profiles
+        "404":
+          description: Not Found - Resource Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+              examples:
+                "403-Forbidden":
+                  summary: Not Found
+                  description: Not Found - Resource Not Found
+                  value:
+                    errors:
+                    - code: CUST-COMP-001
+                      message: Company profile not found
+                      source: HINT-company-profile-app
+                      timestamp: 2024-01-05T18:51:33.854+00:00
+                      path: /pms/v1/company/search/profiles
+        "500":
+          description: System Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+              examples:
+                "503-UnrecoverableError":
+                  summary: System Error
+                  description: |
+                    Service Unavailable - Unrecoverable error, database down
+                  value:
+                    errors:
+                    - code: CUST002
+                      message: System Error
+                      source: HINT-company-profile-app
+                      timestamp: 2024-01-05T18:51:33.854+00:00
+                      path: /pms/v1/company/search/profiles
+      x-swagger-router-controller: Default
+  /acr/v1/country-codes:
+    get:
+      summary: Get Country Codes
+      description: "Get Country Code: A user be should be able to get the list of\
+        \ Country Codes to ACR so that the same can be configured and used while creating\
+        \ a reservation in ACR."
+      operationId: acrV1Country_codesGET
+      parameters:
+      - name: X-Gateway-Key
+        in: header
+        description: get "primaryKey" subscription of a STAY user from STAY core.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      security: []
+      x-swagger-router-controller: Default
+  /acr/v1/reservation-status-codes:
+    get:
+      summary: Get Reservation status codes
+      description: "Get Reservation status code: A user should be able to get the\
+        \ list of Reservation Status Codes to ACR so that the same can be used in\
+        \ ACR"
+      operationId: acrV1Reservation_status_codesGET
+      parameters:
+      - name: X-Gateway-Key
+        in: header
+        description: get "primaryKey" subscription of a STAY user from STAY core.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      security: []
+      x-swagger-router-controller: Default
+  /acr/v1/state-codes:
+    get:
+      summary: Get State Codes
+      description: "Get State Code: A user should be able to get the list of State\
+        \ Codes to ACR so that the same can be configured and used while creating\
+        \ a reservation in ACR"
+      operationId: acrV1State_codesGET
+      parameters:
+      - name: X-Gateway-Key
+        in: header
+        description: get "primaryKey" subscription of a STAY user from STAY core.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+      security: []
+      x-swagger-router-controller: Default
+components:
+  schemas:
+    cancellationReasonCodes:
+      properties:
+        ErrorMessage:
+          type: string
+          format: array
+          example: sucess
+        Success:
+          type: boolean
+          example: true
+        cancelReason:
+          type: array
+          items:
+            $ref: '#/components/schemas/CancelReason'
+        currentHotelDate:
+          type: string
+          format: date-time
+          example: 2024-05-06T09:47:25.123Z
+      example:
+        currentHotelDate: 2024-05-06T09:47:25.123Z
+        ErrorMessage: sucess
+        cancelReason:
+        - description: Cancellation Fee
+          reasonCode: CXL
+        - description: Cancellation Fee
+          reasonCode: CXL
+        Success: true
+    CancelReason:
+      properties:
+        reasonCode:
+          type: string
+          example: CXL
+        description:
+          type: string
+          example: Cancellation Fee
+      description: |
+        List of cancelation reason codes available in STAY. which will be used
+      example:
+        description: Cancellation Fee
+        reasonCode: CXL
+    Errors:
+      required:
+      - errors
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+      description: |
+        Object containing an array messages or errors to be returned to the caller. Marriott api conventions are to return two service messages for each error:  one is a developer message (type=dev). The other is the user message (type=user)
+    Error:
+      required:
+      - code
+      - message
+      - path
+      - source
+      - timestamp
+      type: object
+      properties:
+        code:
+          type: string
+          description: |
+            Interal error code. It is recommended that the API clients do not use this code. But log it so that it can be reported for troubleshooting.
+          example: CUST-COMP-001
+        message:
+          type: string
+          description: |
+            Descriptive error message.
+          example: Company profile not found
+        source:
+          type: string
+          description: |
+            Source is the application from where the error is thrown.
+          example: HINT-company-profile-app
+        timestamp:
+          type: string
+          description: "Timestamp when the error was occured. \n"
+          example: 2024-01-05T18:51:33.854+00:00
+        path:
+          type: string
+          description: "Basically a URI for which the error is repoted. \n"
+          example: /pms/v1/company/read/profile/0012456
+      description: |
+        A single message or error object to be returned to the caller. A single user message will be returned where type=user. The structure contains two message-oriented fields.  The message field will contain the text that may be used by the client. The devMessage field contains a developer message.
+  responses:
+    "401-search":
+      description: Unauthorized - Unable to identify channel / user
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errors'
+          examples:
+            "401-Unauthorized":
+              summary: Unauthorized
+              description: Unable to identify channel / user
+              value:
+                errors:
+                - code: CUST001
+                  message: Valid client Id value is required
+                  source: HINT-company-profile-app
+                  timestamp: 2024-01-05T18:51:33.854+00:00
+                  path: /pms/v1/company/search/profiles
+    "403-search":
+      description: Forbidden - Caller is not allowed to access the resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errors'
+          examples:
+            "403-Forbidden":
+              summary: Forbidden
+              description: Forbidden - caller is not allowed to access the resource
+              value:
+                errors:
+                - code: CUST004
+                  message: Client Id is not authorized to access the resource
+                  source: HINT-company-profile-app
+                  timestamp: 2024-01-05T18:51:33.854+00:00
+                  path: /pms/v1/company/search/profiles
+    "404-search":
+      description: Not Found - Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errors'
+          examples:
+            "403-Forbidden":
+              summary: Not Found
+              description: Not Found - Resource Not Found
+              value:
+                errors:
+                - code: CUST-COMP-001
+                  message: Company profile not found
+                  source: HINT-company-profile-app
+                  timestamp: 2024-01-05T18:51:33.854+00:00
+                  path: /pms/v1/company/search/profiles
+    "422-search":
+      description: Unprocessable Entity - Request validation failure.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errors'
+          examples:
+            "422-RequestValidationError":
+              summary: Unprocessable Entity - request validation errors
+              description: "Request validation errors.  The request was well-formed\
+                \ but was unable to be followed due to semantic errors (parsed as\
+                \ grammatically correct however incorrect variable types or sizes,\
+                \ nonexistent variables, subscripts out of range, etc. were encountered).\
+                \ Invalid query parameter value."
+              value:
+                errors:
+                - code: CUST-COMP-002
+                  message: Company name search text not provided
+                  source: HINT-company-profile-app
+                  timestamp: 2024-01-05T18:51:33.854+00:00
+                  path: /pms/v1/company/search/profiles
+    "500-search":
+      description: System Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errors'
+          examples:
+            "503-UnrecoverableError":
+              summary: System Error
+              description: |
+                Service Unavailable - Unrecoverable error, database down
+              value:
+                errors:
+                - code: CUST002
+                  message: System Error
+                  source: HINT-company-profile-app
+                  timestamp: 2024-01-05T18:51:33.854+00:00
+                  path: /pms/v1/company/search/profiles
+    "401-read":
+      description: Unauthorized - Unable to identify channel / user
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errors'
+          examples:
+            "401-Unauthorized":
+              summary: Unauthorized
+              description: Unable to identify channel / user
+              value:
+                errors:
+                - code: CUST001
+                  message: Valid client Id value is required
+                  source: HINT-company-profile-app
+                  timestamp: 2024-01-05T18:51:33.854+00:00
+                  path: /pms/v1/company/read/profile/0012456
+    "403-read":
+      description: Forbidden - Caller is not allowed to access the resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errors'
+          examples:
+            "403-Forbidden":
+              summary: Forbidden
+              description: Forbidden - caller is not allowed to access the resource
+              value:
+                errors:
+                - code: CUST004
+                  message: Client Id is not authorized to access the resource
+                  source: HINT-company-profile-app
+                  timestamp: 2024-01-05T18:51:33.854+00:00
+                  path: /pms/v1/company/read/profile/0012456
+    "404-read":
+      description: Not Found - Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errors'
+          examples:
+            "403-Forbidden":
+              summary: Not Found
+              description: Not Found - Resource Not Found
+              value:
+                errors:
+                - code: CUST-COMP-001
+                  message: Company profile not found
+                  source: HINT-company-profile-app
+                  timestamp: 2024-01-05T18:51:33.854+00:00
+                  path: /pms/v1/company/read/profile/0012456
+    "422-read":
+      description: Unprocessable Entity - Request validation failure.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errors'
+          examples:
+            "422-RequestValidationError":
+              summary: Unprocessable Entity - request validation errors
+              description: "Request validation errors.  The request was well-formed\
+                \ but was unable to be followed due to semantic errors (parsed as\
+                \ grammatically correct however incorrect variable types or sizes,\
+                \ nonexistent variables, subscripts out of range, etc. were encountered).\
+                \ Invalid query parameter value."
+              value:
+                errors:
+                - code: CUST-COMP-002
+                  message: Company name search text not provided
+                  source: HINT-company-profile-app
+                  timestamp: 2024-01-05T18:51:33.854+00:00
+                  path: /pms/v1/company/read/profile/0012456
+    "500-read":
+      description: System Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errors'
+          examples:
+            "503-UnrecoverableError":
+              summary: System Error
+              description: |
+                Service Unavailable - Unrecoverable error, database down
+              value:
+                errors:
+                - code: CUST002
+                  message: System Error
+                  source: HINT-company-profile-app
+                  timestamp: 2024-01-05T18:51:33.854+00:00
+                  path: /pms/v1/company/read/profile/0012456
+  securitySchemes:
+    ClientCredentials:
+      type: http
+      description: |
+        Agilysys Core Client Credentials
+
+        Credentials are acquired via Agilysys Core (UI or API)
+
+            apiClientId:          ${apiClientId}
+            apiUserName:          ${apiUserName}
+            apiUserPlainTextKey:  ${apiUserPlainTextKey}
+
+        And formed as basic authorization fields as:
+
+            username: ${apiClientId}!${apiUserName}
+            password: ${apiUserPlainTextKey}
+      scheme: basic

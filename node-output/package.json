@@ -1,0 +1,20 @@
+{
+  "name": "acr-hint-integration-v1",
+  "version": "1.0.0",
+  "description": "These are the list of APIs which will be used by ACR to get request/response from STAY using Adapter backplane (i.e., ACR HINT Integration) ",
+  "main": "index.js",
+  "scripts": {
+	"prestart": "npm install",
+	"start": "node index.js"
+  },
+  "keywords": [
+    "swagger"
+  ],
+  "license": "Unlicense",
+  "private": true,
+  "dependencies": {
+    "connect": "^3.2.0",
+    "js-yaml": "^3.3.0",
+    "oas3-tools": "^2.2.3"
+  }
+}
